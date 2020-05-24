@@ -9541,6 +9541,11 @@ if (home) {
       carouselItem = document.querySelectorAll('.carousel'),
       carouselContainer = document.querySelector('.carousel-container');
   var size = carouselItem[0].clientWidth;
+
+  window.addEventListener('resize', function () {
+    size = carouselItem[0].clientWidth;
+  });
+
   carouselContainer.style.transform = 'translateX(' + -size + 'px)';
 
   nextBtn.addEventListener('click', function () {
@@ -9556,6 +9561,31 @@ if (home) {
   });
 }
 
+if (home) {
+  var tours = document.querySelectorAll('.tours-poster');
+
+  var tourOptions = {
+    // margin: '0 0 -300px 0',
+    threshold: 0.3
+  };
+
+  var tourObserve = new IntersectionObserver(function (entries, tourObserve) {
+    entries.forEach(function (entry) {
+      if (!entry.isIntersecting) {
+        return;
+      } else {
+        entry.target.classList.add('moveup');
+        console.log(entry.target);
+        tourObserve.unobserve(entry.target);
+      }
+    });
+  }, tourOptions);
+
+  tours.forEach(function (tour) {
+    tourObserve.observe(tour);
+  });
+}
+
 // show-section
 var slideShow = document.querySelector('.slide-show');
 
@@ -9566,6 +9596,10 @@ if (slideShow) {
       showContainer = document.querySelector('.carousel-show');
 
   var size1 = showItem[0].clientWidth;
+
+  window.addEventListener('resize', function () {
+    size1 = showItem[0].clientWidth;
+  });
 
   showContainer.style.transform = 'translateX(' + -size1 + 'px)';
 
@@ -9598,6 +9632,45 @@ if (contactSec) {
     _Validate.validate.checkName(contactMes);
     _Validate.validate.checkEmail(contactEmail);
     _Validate.validate.checkPhone(contactPhone);
+  });
+}
+
+//  about counter
+var aboutAd = document.querySelector('.about-ads');
+if (aboutAd) {
+  var aboutCounter = document.querySelectorAll('.about-counter');
+  var speed = 10;
+
+  var counterOptions = {
+    threshold: 1
+  };
+
+  var counterObserve = new IntersectionObserver(function (entries, counterObserve) {
+    entries.forEach(function (entry) {
+      if (!entry.isIntersecting) {
+        return;
+      } else {
+        console.log(entry.target);
+        var counter = entry.target;
+        var updateCount = function updateCount() {
+          var countNum = +counter.getAttribute('data-target');
+          var count = +counter.innerText;
+          var inc = Math.floor(countNum / speed);
+          if (count < countNum) {
+            counter.innerText = count + inc;
+            setTimeout(updateCount, 100);
+          } else {
+            counter.innerText = countNum;
+          }
+        };
+        updateCount();
+        counterObserve.unobserve(entry.target);
+      }
+    });
+  }, counterOptions);
+
+  aboutCounter.forEach(function (counter) {
+    counterObserve.observe(counter);
   });
 }
 
